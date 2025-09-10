@@ -12,7 +12,6 @@ import lombok.Setter;
 public class LoginResponseDTO {
 
     private String token;
-    private String email;
     private LocalDateTime time;
     private String error;
     private String message;

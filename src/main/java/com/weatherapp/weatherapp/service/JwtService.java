@@ -30,12 +30,6 @@ public class JwtService {
                 .compact();
     }
 
-    // Get Username
-    public String getUsername(String token) {
-        Claims data = getTokenData(token);
-        return (data != null) ? data.getSubject() : null;
-    }
-
     // Get ID
     public String getUserId(String token) {
         Claims data = getTokenData(token);
