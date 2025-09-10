@@ -14,6 +14,7 @@ import com.weatherapp.weatherapp.dto.userDTO.LoginRequestDTO;
 import com.weatherapp.weatherapp.dto.userDTO.LoginResponseDTO;
 import com.weatherapp.weatherapp.dto.userDTO.RegisterRequestDTO;
 import com.weatherapp.weatherapp.dto.userDTO.RegisterResponseDTO;
+import com.weatherapp.weatherapp.dto.userDTO.UserResponseDTO;
 import com.weatherapp.weatherapp.entity.UserEntity;
 import com.weatherapp.weatherapp.service.AuthService;
 import com.weatherapp.weatherapp.service.UserService;
@@ -40,14 +41,19 @@ public class AuthController {
     public ResponseEntity<?> getAllUsers(HttpServletRequest request) {
         String authorization = request.getHeader("Authorization");
         if (authorization == null || !authorization.startsWith("Bearer ")) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Missing or invalid token");        
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Missing or invalid token");
         }
+
         String jwt_key = authorization.split(" ")[1];
         UserEntity user = authService.getAuthUserDetails(jwt_key);
-        if(user == null) {
+
+        if (user == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token");
         }
-        return ResponseEntity.ok(user);
+
+        UserResponseDTO response = new UserResponseDTO(user.getEmail());
+
+        return ResponseEntity.ok(response);
     }
 
     // Register User
@@ -61,13 +67,15 @@ public class AuthController {
 
     }
 
-    //login
+    // login
     @PostMapping("/login")
-    public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginRequestDTO loginData, HttpServletResponse response) {
+    public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginRequestDTO loginData,
+            HttpServletResponse response) {
         LoginResponseDTO res = authService.login(loginData);
-        if (res.getError()!= null) return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
+        if (res.getError() != null)
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
 
         return ResponseEntity.status(HttpStatus.OK).body(res);
     }
-    
+
 }
