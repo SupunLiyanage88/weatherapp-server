@@ -38,10 +38,10 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
                 .csrf(c -> c.disable())
-                .cors(c -> c.configurationSource(corsConfigurationSource())) // Enable CORS
+                .cors(c -> c.configurationSource(corsConfigurationSource())) 
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(r -> r
-                        .requestMatchers("/login", "/api/auth/login", "/api/auth/register", "/api/auth/*")
+                        .requestMatchers("/login", "/api/auth/login", "/api/auth/*")
                         .permitAll()
                         .anyRequest()
                         .authenticated())

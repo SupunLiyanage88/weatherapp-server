@@ -1,6 +1,7 @@
 package com.weatherapp.weatherapp.service;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -18,8 +19,12 @@ public class WeatherService {
 
     @Cacheable(value = "weatherCache", key = "#cityId")
     public Map<String, Object> getWeather(String cityId) {
+        
+        System.out.println("Cache — storing data for: " + cityId);
+
         String url = "https://api.openweathermap.org/data/2.5/weather?id="
                 + cityId + "&appid=" + apiKey + "&units=metric";
+
         Map<String, Object> response = restTemplate.getForObject(url, Map.class);
 
         Map<String, Object> result = new HashMap<>();
@@ -28,12 +33,13 @@ public class WeatherService {
         Map<String, Object> main = (Map<String, Object>) response.get("main");
         result.put("temp", main.get("temp"));
 
-        var weatherList = (java.util.List<Map<String, Object>>) response.get("weather");
+        List<Map<String, Object>> weatherList = (List<Map<String, Object>>) response.get("weather");
         if (!weatherList.isEmpty()) {
             result.put("description", weatherList.get(0).get("description"));
         }
 
+        System.out.println(result); //test
+
         return result;
     }
-
 }
